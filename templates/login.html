@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-aside">
+    <div class="eyebrow">Welcome back</div>
+    <h1>Your files are <span>right where you left them.</span></h1>
+    <p>Sign in to see the documents you own or that others have shared with you.</p>
+    <div class="aside-note">Too many wrong passwords in a row will pause sign-in for a few minutes.</div>
+  </div>
+  <div class="auth-card">
+    <div class="card-kicker">SIGN IN</div>
+    <h2>Good to see you</h2>
+    <p class="muted">Enter your details to continue.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Username<input name="username" autocomplete="username" maxlength="80" required placeholder="e.g. alex.smith"></label>
+      <label>Password<input type="password" name="password" autocomplete="current-password" required placeholder="Your password"></label>
+      <button class="button primary full" type="submit">Sign in</button>
+    </form>
+    <p class="auth-switch">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+  </div>
+</section>
+{% endblock %}

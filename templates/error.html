@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ code }}{% endblock %}
+{% block content %}
+<section class="error-state">
+  <div class="error-code">{{ code }}</div>
+  <h1>Hmm, that didn't work.</h1>
+  <p>{{ message }}</p>
+  <a class="button primary" href="{{ url_for('dashboard') if current_user.is_authenticated else url_for('home') }}">Take me back</a>
+</section>
+{% endblock %}

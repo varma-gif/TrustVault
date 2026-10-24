@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Edit document{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('dashboard') }}">← Back to workspace</a>
+  <div class="eyebrow">Edit</div>
+  <h1>Edit document</h1>
+  <p class="muted">Currently version {{ document.version }} · file <b>{{ document.original_filename|e }}</b></p>
+  <div class="upload-card">
+    <form method="post" enctype="multipart/form-data" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Document name<input name="name" maxlength="200" required value="{{ document.name }}"></label>
+      <label>Category<input name="category" maxlength="100" value="{{ document.category or '' }}"></label>
+      <label>Replace the file (optional)
+        <input type="file" name="file" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.xlsx,.csv">
+        <span class="file-help">Must be the same type as the original. The old file is removed once the new one is saved.</span>
+      </label>
+      <button class="button primary full" type="submit">Save changes</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

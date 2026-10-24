@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Trash{% endblock %}
+{% block content %}
+<section class="dashboard-heading">
+  <div>
+    <div class="eyebrow">Trash</div>
+    <h1>Deleted documents</h1>
+    <p class="muted">While a document is in the trash, nobody can open it, not even people it was shared with. Restoring brings everything back as it was.</p>
+  </div>
+</section>
+<section class="panel">
+  <div class="panel-heading"><div><h2>In the trash</h2></div><span class="pill grey">{{ documents|length }}</span></div>
+  {% if documents %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Document</th>{% if current_user.role == 'admin' %}<th>Owner</th>{% endif %}<th>Deleted</th><th></th></tr></thead>
+      <tbody>
+      {% for doc in documents %}
+        <tr>
+          <td><div class="doc-cell"><b>{{ doc.name }}</b><small>TV-{{ "%04d"|format(doc.id) }}</small></div></td>
+          {% if current_user.role == 'admin' %}<td>{{ doc.owner.username }}</td>{% endif %}
+          <td>{{ doc.deleted_at.strftime('%d %b %Y %H:%M') }}</td>
+          <td>
+            <form method="post" action="{{ url_for('restore_document', document_id=doc.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="button secondary small" type="submit">Restore</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state"><h3>The trash is empty</h3><p>Deleted documents will wait here until you restore them.</p></div>
+  {% endif %}
+</section>
+{% endblock %}

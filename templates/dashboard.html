@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Workspace{% endblock %}
+{% block content %}
+<section class="dashboard-heading">
+  <div>
+    <div class="eyebrow">Your workspace</div>
+    <h1>Hello, {{ current_user.username }}.</h1>
+    <p class="muted">Here are the documents you own or that others have shared with you.</p>
+  </div>
+  {% if current_user.role in ['owner', 'admin'] %}
+    <div class="heading-actions"><a class="button primary" href="{{ url_for('upload_document') }}">+ Upload document</a></div>
+  {% endif %}
+</section>
+
+<div class="stats-row">
+  <div class="stat-card"><span class="stat-label">Documents you can open</span><strong>{{ documents|length }}</strong><span class="stat-foot">Matching your current search</span></div>
+  <div class="stat-card"><span class="stat-label">Your role</span><strong>{{ current_user.role|title }}</strong><span class="stat-foot">Access is still checked per document</span></div>
+  <div class="stat-card"><span class="stat-label">Activity</span><strong>Recorded</strong><span class="stat-foot">Including refused attempts</span></div>
+</div>
+
+<section class="panel">
+  <div class="panel-heading">
+    <div><h2>Your documents</h2><p>Search by name or owner, then narrow by category or date.</p></div>
+    <span class="pill grey">{{ documents|length }} file{{ '' if documents|length == 1 else 's' }}</span>
+  </div>
+
+  <form method="get" class="search-row">
+    <input name="q" value="{{ query }}" placeholder="Search by document name or owner…">
+    <select name="category">
+      <option value="">All categories</option>
+      {% for c in categories %}<option value="{{ c }}" {% if selected_category == c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select>
+    <label>From <input type="date" name="date_from" value="{{ date_from }}"></label>
+    <label>To <input type="date" name="date_to" value="{{ date_to }}"></label>
+    <button class="button secondary" type="submit">Search</button>
+    {% if query or selected_category or date_from or date_to %}<a class="clear-link" href="{{ url_for('dashboard') }}">Clear</a>{% endif %}
+  </form>
+
+  {% if documents %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Document</th><th>Owner</th><th>Category</th><th>Added</th><th>Your access</th><th></th></tr></thead>
+      <tbody>
+      {% for doc in documents %}
+        {% set level = levels[doc.id] %}
+        <tr>
+          <td><div class="doc-cell"><b>{{ doc.name }}</b><small>TV-{{ "%04d"|format(doc.id) }} · v{{ doc.version }}</small></div></td>
+          <td>{{ doc.owner.username }}</td>
+          <td><span class="pill grey">{{ doc.category or 'Uncategorised' }}</span></td>
+          <td>{{ doc.created_at.strftime('%d %b %Y') }}</td>
+          <td>
+            {% if level == 'admin' %}<span class="pill red">Administrator</span>
+            {% elif level == 'owner' %}<span class="pill green">Owner</span>
+            {% elif level == 'edit' %}<span class="pill">Can edit</span>
+            {% else %}<span class="pill grey">Can read</span>{% endif %}
+          </td>
+          <td>
+            <div class="row-actions">
+              <a class="text-action" href="{{ url_for('download_document', document_id=doc.id) }}">Download</a>
+              {% if level in ['edit', 'owner', 'admin'] %}
+                <a class="text-action" href="{{ url_for('edit_document', document_id=doc.id) }}">Edit</a>
+              {% endif %}
+              {% if level in ['owner', 'admin'] %}
+                <a class="text-action" href="{{ url_for('manage_permissions', document_id=doc.id) }}">Share</a>
+                <form method="post" action="{{ url_for('delete_document', document_id=doc.id) }}" data-confirm="Move this document to the trash? You can restore it later.">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="text-action danger-text" type="submit">Delete</button>
+                </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <h3>No documents here</h3>
+    <p>{% if query or selected_category or date_from or date_to %}Nothing matches that search. Try changing or clearing the filters.
+       {% elif current_user.role in ['owner','admin'] %}Upload your first document to get started.
+       {% else %}When someone shares a document with you, it will show up here.{% endif %}</p>
+    {% if current_user.role in ['owner','admin'] and not (query or selected_category or date_from or date_to) %}
+      <a class="button primary" href="{{ url_for('upload_document') }}">Upload a document</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+
+{% if current_user.role == 'admin' %}
+<section class="panel">
+  <div class="panel-heading">
+    <div><h2>Recent activity</h2><p>The latest events across the workspace.</p></div>
+    <a class="text-action" href="{{ url_for('admin_audit') }}">View everything</a>
+  </div>
+  {% for event in recent_events[:5] %}
+    <div class="activity-row">
+      <span class="dot"></span>
+      <div><b>{{ event.action|replace('_',' ')|title }}</b><small>{{ event.details or 'No extra details' }}</small></div>
+      <time>{{ event.created_at.strftime('%d %b · %H:%M') }}</time>
+    </div>
+  {% else %}
+    <p class="muted" style="padding:0 24px 20px">No activity recorded yet.</p>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

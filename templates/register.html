@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Create account{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-aside">
+    <div class="eyebrow">Join in a minute</div>
+    <h1>Share with <span>confidence.</span></h1>
+    <p>Create an account to receive documents that others share with you.</p>
+    <div class="aside-note">New accounts are always <b>viewers</b>. If you need to upload documents, ask an administrator to make you an owner.</div>
+  </div>
+  <div class="auth-card">
+    <div class="card-kicker">GET STARTED</div>
+    <h2>Create account</h2>
+    <p class="muted">Just a username and a password.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Username<input name="username" autocomplete="username" maxlength="80" required placeholder="Choose a username"></label>
+      <label>Password<input type="password" name="password" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"><small>Use a password you don't use anywhere else.</small></label>
+      <button class="button primary full" type="submit">Create my account</button>
+    </form>
+    <p class="auth-switch">Already registered? <a href="{{ url_for('login') }}">Sign in</a></p>
+  </div>
+</section>
+{% endblock %}

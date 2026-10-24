@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Manage access{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('dashboard') }}">← Back to workspace</a>
+  <div class="eyebrow">Sharing</div>
+  <h1>Who can open this?</h1>
+  <p class="muted">Choose exactly who can access <strong>{{ document.name|e }}</strong>.</p>
+  <div class="upload-card">
+    <h2>Give or change access</h2>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Their username<input name="username" required maxlength="80" placeholder="Type the exact username"></label>
+      <label>What can they do?
+        <select name="permission">
+          <option value="read">Read: view and download</option>
+          <option value="edit">Edit: read, plus rename, re-categorise and replace the file</option>
+        </select>
+      </label>
+      <button class="button primary full" type="submit">Save</button>
+    </form>
+
+    <div class="section-rule"></div>
+    <h2>People with access</h2>
+    {% for grant in grants %}
+      <div class="grant-row">
+        <div class="avatar">{{ grant.user.username[:2]|upper|e }}</div>
+        <div class="grant-info"><b>{{ grant.user.username|e }}</b><small>{{ grant.permission|title }} access</small></div>
+        <form method="post" action="{{ url_for('revoke_permission', document_id=document.id, user_id=grant.user_id) }}" data-confirm="Take access away from {{ grant.user.username|e }}?">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="button danger small" type="submit">Revoke</button>
+        </form>
+      </div>
+    {% else %}
+      <p class="muted">Nobody else has access to this document yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

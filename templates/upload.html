@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Upload document{% endblock %}
+{% block content %}
+<section class="form-page">
+  <a class="back-link" href="{{ url_for('dashboard') }}">← Back to workspace</a>
+  <div class="eyebrow">New document</div>
+  <h1>Upload a document</h1>
+  <p class="muted">Only you, the administrators, and the people you choose to share it with can open it.</p>
+  <div class="upload-card">
+    <form method="post" enctype="multipart/form-data" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Document name<input name="name" maxlength="200" placeholder="e.g. Client agreement, October"></label>
+      <label>Category<input name="category" maxlength="100" placeholder="e.g. Contracts, HR, Finance"></label>
+      <label>Choose a file
+        <input type="file" name="file" required accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg,.xlsx,.csv">
+        <span class="file-help">PDF, Word, text, image, Excel or CSV · up to 10 MB</span>
+      </label>
+      <div class="privacy-note"><b>We check what you upload</b>The file's real contents must match its type. This demo does not scan for viruses, so please don't upload real confidential files.</div>
+      <button class="button primary full" type="submit">Upload</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

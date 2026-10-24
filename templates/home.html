@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Share files safely{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">Private document sharing</div>
+    <h1>Send the file. <span>Keep the keys.</span></h1>
+    <p class="hero-text">Give named people access to one document, see who opened it, and take access back the moment you change your mind.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="{{ url_for('register') }}">Create an account</a>
+      <a class="button secondary" href="{{ url_for('login') }}">I already have one</a>
+    </div>
+    <p class="trust-line">Per-document access · A diary of every attempt · Revoke any time</p>
+  </div>
+  <div class="hero-art">
+    <div class="vault-card">
+      <div class="vault-title">Project agreement.pdf</div>
+      <small class="muted">Shared with 2 people</small>
+      <div class="access-row"><div class="avatar">JD</div><div><b>Jordan Davis</b><small>Can read</small></div></div>
+      <div class="access-row"><div class="avatar alt">MK</div><div><b>Maya Kim</b><small>Can edit</small></div></div>
+      <div class="audit-mini"><b>Every request leaves a trail</b>Including the ones that were refused.</div>
+    </div>
+  </div>
+</section>
+
+<section class="feature-grid">
+  <article class="feature"><h3>Only the people you pick</h3><p>Share a single document with a named person as reader or editor. Nobody gets a whole folder by accident.</p></article>
+  <article class="feature"><h3>A diary you can trust</h3><p>Uploads, downloads, edits, deletions and sharing changes are all recorded, and the record is chained so edits show up.</p></article>
+  <article class="feature"><h3>Changing your mind is instant</h3><p>Remove someone and their very next request is refused. There are no long-lived links to chase down.</p></article>
+</section>
+
+<div class="bottom-cta">
+  <div><h2>Keep sensitive work in the right hands.</h2><p>It takes about a minute to get started.</p></div>
+  <a class="button dark" href="{{ url_for('register') }}">Start using TrustVault</a>
+</div>
+{% endblock %}

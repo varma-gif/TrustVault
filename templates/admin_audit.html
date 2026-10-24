@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Audit trail{% endblock %}
+{% block content %}
+<section class="dashboard-heading">
+  <div>
+    <div class="eyebrow">Administration</div>
+    <h1>Audit trail</h1>
+    <p class="muted">Every upload, download, change, deletion and sharing change, plus every refused attempt.</p>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-heading"><div><h2>Is the record intact?</h2><p>Each entry is chained to the one before it, so changing an old entry breaks the chain.</p></div></div>
+  {% if chain_ok %}
+    <div class="integrity ok"><b>All {{ chain_count }} entries check out.</b>
+      {% if head_hash %}<br>Newest fingerprint: <code>{{ head_hash }}</code><br>
+      <small>Tip: write this down somewhere outside the server now and then. It proves nothing before this point was rewritten.</small>{% endif %}</div>
+  {% else %}
+    <div class="integrity bad"><b>The chain is broken at entry #{{ chain_bad_id }}.</b> Something was changed after it was written. Treat the log from that entry onwards as untrustworthy.</div>
+  {% endif %}
+</section>
+
+{% if flagged or overrides %}
+<section class="panel">
+  <div class="panel-heading"><div><h2>Worth noticing</h2><p>Things an administrator would want to look at.</p></div></div>
+  <div class="attention">
+    {% if flagged %}
+      <h3>People refused 3 or more times in the last 24 hours</h3>
+      <ul>{% for who, n in flagged.items() %}<li><b>{{ who }}</b>: {{ n }} refused attempts</li>{% endfor %}</ul>
+    {% endif %}
+    {% if overrides %}
+      <h3>Administrators who opened documents nobody shared with them</h3>
+      <ul>{% for e in overrides %}<li>{{ e.created_at.strftime('%d %b %Y %H:%M') }}: {{ e.actor.username if e.actor else 'unknown' }} opened document {{ e.document_id }}</li>{% endfor %}</ul>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <div class="panel-heading"><div><h2>Events</h2><p>Newest first, up to 200.</p></div><span class="pill grey">{{ events|length }} shown</span></div>
+  <form method="get" class="search-row">
+    <select name="action">
+      <option value="">Any action</option>
+      {% for a in actions %}<option value="{{ a }}" {% if a == sel_action %}selected{% endif %}>{{ a|replace('_',' ') }}</option>{% endfor %}
+    </select>
+    <input name="document_id" value="{{ sel_doc }}" placeholder="Document ID" style="max-width:140px">
+    <input name="user" value="{{ sel_user }}" placeholder="Username" style="max-width:180px">
+    <button class="button secondary" type="submit">Filter</button>
+    {% if sel_action or sel_doc or sel_user %}<a class="clear-link" href="{{ url_for('admin_audit') }}">Clear</a>{% endif %}
+  </form>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Time (UTC)</th><th>Who</th><th>What</th><th>Document</th><th>Details</th></tr></thead>
+      <tbody>
+      {% for e in events %}
+        <tr>
+          <td>{{ e.id }}</td>
+          <td>{{ e.created_at.strftime('%d %b %Y %H:%M:%S') }}</td>
+          <td>{{ e.actor.username if e.actor else 'anonymous' }}</td>
+          <td><span class="pill {{ 'red' if e.action.endswith('_denied') or e.action in ['login_rate_limited','upload_rejected'] else 'grey' }}">{{ e.action|replace('_',' ') }}</span></td>
+          <td>{{ e.document_id or '—' }}</td>
+          <td class="details-cell">{{ e.details or '—' }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6">Nothing matches those filters.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

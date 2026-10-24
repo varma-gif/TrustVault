@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}People{% endblock %}
+{% block content %}
+<section class="dashboard-heading">
+  <div>
+    <div class="eyebrow">Administration</div>
+    <h1>People</h1>
+    <p class="muted">Create accounts and switch people off. Disabling someone signs them out everywhere straight away.</p>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-heading"><div><h2>Everyone</h2></div><span class="pill grey">{{ users|length }} account{{ '' if users|length == 1 else 's' }}</span></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+      <tbody>
+      {% for u in users %}
+        <tr>
+          <td><b>{{ u.username }}</b></td>
+          <td><span class="pill {{ 'red' if u.role == 'admin' else '' }}">{{ u.role|title }}</span></td>
+          <td>{% if u.active %}<span class="pill green">Active</span>{% else %}<span class="pill grey">Disabled</span>{% endif %}</td>
+          <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+          <td>
+            {% if u.id != current_user.id %}
+            <form method="post" action="{{ url_for('admin_toggle_user', user_id=u.id) }}" data-confirm="{{ 'Disable' if u.active else 'Re-enable' }} {{ u.username }}?">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="text-action {{ 'danger-text' if u.active }}" type="submit">{{ 'Disable' if u.active else 'Enable' }}</button>
+            </form>
+            {% else %}<span class="muted">That's you</span>{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="form-page" style="margin-top:0">
+  <div class="upload-card">
+    <h2>Add a person</h2>
+    <p class="muted">Only administrators can create owners and other administrators.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Username<input name="username" required maxlength="80"></label>
+      <label>Password<input type="password" name="password" required minlength="12" autocomplete="new-password"><small>At least 12 characters.</small></label>
+      <label>Role
+        <select name="role">
+          <option value="viewer">Viewer: sees only what is shared with them</option>
+          <option value="owner">Owner: uploads and shares documents</option>
+          <option value="admin">Administrator: sees everything and the audit trail</option>
+        </select>
+      </label>
+      <button class="button primary full" type="submit">Create account</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

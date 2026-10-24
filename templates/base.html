@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}TrustVault{% endblock %} · TrustVault</title>
+  <!-- Fonts: Fraunces (headings) + Nunito Sans (body). To change them, edit this link AND --font-heading / --font-body in style.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('home') }}">
+    <span class="brand-mark">T</span>
+    <span>TrustVault<small>Share files. Keep control.</small></span>
+  </a>
+  <nav>
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('dashboard') }}">Workspace</a>
+      {% if current_user.role in ['owner', 'admin'] %}
+        <a href="{{ url_for('upload_document') }}">Upload</a>
+        <a href="{{ url_for('trash') }}">Trash</a>
+      {% endif %}
+      {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('admin_audit') }}">Audit trail</a>
+        <a href="{{ url_for('admin_users') }}">People</a>
+      {% endif %}
+      <span class="user-pill">{{ current_user.username }} · {{ current_user.role }}</span>
+      <form method="post" action="{{ url_for('logout') }}" class="inline-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="nav-button" type="submit">Sign out</button>
+      </form>
+    {% else %}
+      <a href="{{ url_for('login') }}">Sign in</a>
+      <a class="nav-cta" href="{{ url_for('register') }}">Get started</a>
+    {% endif %}
+  </nav>
+</header>
+<main class="page">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-stack">
+        {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <span>TrustVault · a hackathon project</span>
+  <span>The server checks access on every request.</span>
+</footer>
+</body>
+</html>
