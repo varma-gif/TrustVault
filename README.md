@@ -6,8 +6,16 @@ Secure document sharing with per-document permissions and a tamper-evident audit
 
 ## Live demo
 
-- **Live site:** `<paste your Render link here>`
-- **Demo logins:** given only in the submission form (the live site does not use the passwords listed below).
+- **Live site:** https://trustvault-qboj.onrender.com
+- **Demo logins for the live site** (fake data only; all four accounts use the same password):
+
+| Role | Username | Password |
+|---|---|---|
+| Administrator | admin_demo | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
+| Document owner | owner_demo | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
+| Viewer (has read access to "Shared salary letter") | viewer_demo | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
+| Viewer (no access to anything) | viewer_two | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
+
 - **Heads up:** on the free hosting tier the database and uploaded files are wiped whenever the service restarts or redeploys, and the first page load after a sleep can take about a minute.
 
 ## Run locally (VS Code terminal)
@@ -56,7 +64,7 @@ Created by `flask --app app seed-demo`. These passwords are public, so use them 
 | Viewer (has read access to "Shared salary letter") | viewer_demo | ViewerDemo#2026! |
 | Viewer (no access to anything) | viewer_two | ViewerTwo#2026! |
 
-**On the live site the demo passwords are different.** If the environment variable `DEMO_PASSWORD` is set, `seed-demo` gives all four accounts that password instead of the ones above. It is given only in the submission form.
+**On the live site the demo passwords are different.** If the environment variable `DEMO_PASSWORD` is set, `seed-demo` gives all four accounts that password instead of the ones above. The live password is listed in the "Live demo" section at the top.
 
 For anything real, do not use `seed-demo`. Run `flask --app app create-admin` and then create owners from the admin Users page.
 
