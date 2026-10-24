@@ -7,6 +7,7 @@ Secure document sharing with per-document permissions and a tamper-evident audit
 ## Live demo
 
 - **Live site:** https://trustvault-qboj.onrender.com
+- **Demo video (5 min):** https://drive.google.com/file/d/1J351y2TvY2-mOxEX6PZaMbCaXTOPmFob/view?usp=sharing
 - **Demo logins for the live site** (fake data only; all four accounts use the same password):
 
 | Role | Username | Password |
