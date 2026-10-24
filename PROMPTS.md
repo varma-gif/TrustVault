@@ -21,6 +21,7 @@ commits that exist now.
   [6c3a874](https://github.com/varma-gif/TrustVault/commit/6c3a874). I still need to do the
   removal check myself before the interview: comment out the `authorize()` call in the download route, run
   `pytest`, and confirm tests fail.
+   - **My own check:** I replaced the `authorize()` call on the download line with one that skips the permission check. 5 tests failed because of it: a stranger got 200 instead of 404, a revoked user could still download, a deleted document could still be downloaded, and two tests crashed when the document did not exist. 8 upload tests also failed, but that was a Windows side effect (an open file the test setup could not delete), not the removal. I restored the line with `git checkout app.py` and checked that all 40 tests passed again.
 
 ## Entry 2 - 2026-10-24 - Audit trail in the database schema file
 - **What I asked:** The task needs database schema and setup scripts, so I asked Claude to produce a
