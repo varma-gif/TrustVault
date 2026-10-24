@@ -18,11 +18,19 @@ Both are audited. Nothing about permissions is cached or put in a URL, so revoki
 very next request.
 
 ## How I used AI and where it was wrong
-TODO (YOU MUST WRITE THIS): tools used, and 2-3 specific mistakes the AI made that you caught.
-Copy them from PROMPTS.md. Do not submit with this line still here.
+I used Claude (claude.ai chat) to review the project, write the schema file and help with deployment.
+Earlier, while building, I also used AI assistants (see README). The detailed log is in `PROMPTS.md`.
+
+Where it was wrong or incomplete:
+- The first `schema.sql` had no audit-log triggers, so it would have left the audit table editable.
+  Claude fixed that before I used the file.
+- Claude told me the demo password had to meet a strength rule it had not checked. The code accepts any value.
+- Its authorization review found no problem, but it could only test from outside and with my test
+  suite, so I still verify the checks myself.
+
+I have not yet written up my earlier build sessions in detail.
 
 ## What is unfinished
 - Single gunicorn worker only (login limiter and audit lock are per-process).
 - On free hosting the database and uploads are lost on restart; demo accounts are re-seeded on start.
 - No password change/reset; replacing a file deletes the old version (hash stays in the audit log).
-- TODO: anything else that does not work when you test the live site.
