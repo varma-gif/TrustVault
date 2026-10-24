@@ -11,10 +11,10 @@ Secure document sharing with per-document permissions and a tamper-evident audit
 
 | Role | Username | Password |
 |---|---|---|
-| Administrator | admin_demo | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
-| Document owner | owner_demo | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
-| Viewer (has read access to "Shared salary letter") | viewer_demo | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
-| Viewer (no access to anything) | viewer_two | PUT-YOUR-RENDER-DEMO_PASSWORD-HERE |
+| Administrator | admin_demo | 23JR1A44B0genai@45 |
+| Document owner | owner_demo | 23JR1A44B0genai@45 |
+| Viewer (has read access to "Shared salary letter") | viewer_demo | 23JR1A44B0genai@45 |
+| Viewer (no access to anything) | viewer_two | 23JR1A44B0genai@45 |
 
 - **Heads up:** on the free hosting tier the database and uploaded files are wiped whenever the service restarts or redeploys, and the first page load after a sleep can take about a minute.
 
