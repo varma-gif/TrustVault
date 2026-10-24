@@ -34,6 +34,7 @@ commits that exist now.
 - **What I did:** I used the corrected `schema.sql`, which includes the triggers. It is in commit
   [6c3a874](https://github.com/varma-gif/TrustVault/commit/6c3a874). Honest note: Claude caught this
   mistake itself, not me. I still need to confirm with a test that the triggers refuse UPDATE and DELETE.
+- **My own check:** I ran `pytest -v -k audit` and all 5 audit tests passed, including `test_audit_rows_cannot_be_updated_or_deleted`, which confirms the database refuses UPDATE and DELETE on audit rows. The hash-chain tampering tests (`test_hash_chain_detects_tampering`, `test_admin_page_shows_broken_chain`) also passed in the full run of 40.
 
 ## Entry 3 - 2026-10-25 - Demo accounts on the public site
 - **What I asked:** How to deploy on Render and keep the live demo accounts safe.
